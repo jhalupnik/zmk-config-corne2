@@ -1,0 +1,160 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/mouse.h>
+
+#define HRML(k1,k2,k3,k4) &hml LGUI k1  &hml LALT k2  &hml LSHFT k3 &hml LCTRL k4
+#define HRMR(k1,k2,k3,k4) &hmr RCTRL k1 &hmr RSHFT k2 &hmr RALT k3  &hmr RGUI k4
+//NUHS    PRINTEA çÇ
+//SEMI    PRINTEA ñÑ
+#define BASE    0
+#define NAV     1
+#define RAT     2
+#define BTH     3
+
+&lt {
+    tapping-term-ms = <190>;
+    flavor = "balanced";
+    quick-tap-ms = <150>;
+};
+&mt {
+    tapping-term-ms = <190>;
+    flavor = "tap-preferred";
+    quick-tap-ms = <150>;
+};
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+    };
+	
+	behaviors {	 
+		skq: sticky_key_quick_release {
+            compatible = "zmk,behavior-sticky-key";
+            label = "STICKY_KEY_QUICK_RELEASE";
+            #binding-cells = <1>;
+            bindings = <&kp>;
+            release-after-ms = <1000>;
+            quick-release;
+        };
+	    hml: home_row_mod_left {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            require-prior-idle-ms = <175>;
+            tapping-term-ms = <250>;
+            quick-tap-ms = <150>;
+            bindings = <&kp>, <&kp>;
+            //hold-trigger-key-positions = < ... >; // List of keys on the right side of the keyboard
+            //hold-trigger-on-release;
+        };
+        hmr: home_row_mod_right {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            require-prior-idle-ms = <175>;
+            tapping-term-ms = <250>;
+            quick-tap-ms = <150>;
+            bindings = <&kp>, <&kp>;
+            //hold-trigger-key-positions = < ... >; // List of keys on the left side of the keyboard
+            //hold-trigger-on-release;
+        };        
+		tdn1: tap_dance_n1 {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <180>;
+            bindings = <&mt EXCL N1>, <&kp EQUAL>;
+        }; 
+		tdn7: tap_dance_n7 {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <180>;
+            bindings = <&mt UNDER N7>, <&kp PLUS>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+		
+		
+// ------------------------------------------------------------------------------------------------------
+// | ESC   | ! 1   | " 2   | · 3   | $ 4   | % 5   | ^ 6    | _ 7   | * 8   | ( 9   | ) 0   | BTH        |
+// | DELETE| Q     | W     | F     | P     | G     | J      | L     | U     | Y     | - @   | [ ]        |
+// | LSHFT | A/Ctl | R/Alt | S/GUI | T/Sft | D     | H      | N/Sft | E/GUI | I/Alt | O/Ctl | '          |
+// | CAPS  | Z/Ctl | X/Ctl | C/Ctl | V/Ctl | B     | K      | M     | ,/Sft | ./Sft | ;     | ? /       |
+//                                 | TAB   | ENTER | SPACE  | RCLK  | BSPC  |
+//                                         | RAT   | NAV    | LCLK  |
+
+Base {
+            bindings = <
+&kp  ESC         &tdn1          &mt RA(N2) N2  &mt RA(N3) N3  &mt DLLR N4    &mt PRCNT N5          &mt CARET N6    &tdn7          &mt ASTERISK N8      &mt LPAR N9     &mt RPAR N0   &tog BTH
+&kp  DELETE      &kp Q          &kp W          &kp F          &kp P          &kp G                 &kp J           &kp L          &kp U                &kp Y           &mt AT MINUS  &mt RBKT RBRC
+&skq LSHIFT      HRML(A,            R,            S,             T)          &kp D                 &kp H           HRMR(N,            E,                   I,              O)        &kp APOS
+&kp  CAPSLOCK    &mt LC(Z) Z    &mt LC(X) X    &mt LC(C) C    &mt LC(V) V    &kp B                 &kp K           &kp M          &mt LS(COMMA) COMMA  &mt LS(DOT) DOT &kp SEMI      &mt QMARK SLASH
+                                               &kp TAB        &kp SPACE      &kp ENTER             &mkp RCLK       &kp BACKSPACE
+                                                              &tog RAT       &tog NAV              &mkp LCLK
+            >;
+
+            //trackball-bindings = <&tmv_coarse>;
+        };
+		
+Nav {
+            bindings = <
+&kp F12      &kp F1      &kp F2      &kp F3      &kp F4      &kp F5      &kp F6      &kp F7      &kp F8      &kp F9      &kp F10      &kp F11
+&trans       &kp PG_UP   &kp PG_DN   &kp HOME    &kp END     &trans      &trans      &trans      &trans      &trans      &trans       &trans
+&trans       &kp UP      &kp DOWN    &kp LEFT    &kp RIGHT   &trans      &trans      &trans      &trans      &trans      &trans       &trans
+&trans       &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans      &trans       &trans
+                         &trans      &trans      &trans      &trans      &trans
+                                     &trans      &trans      &trans
+            >;
+        };
+		
+Rat {
+            bindings = <
+&kp TILDE         &kp EXCLAMATION  &kp HASH      &kp DOLLAR    &kp DOLLAR    &kp PERCENT    &kp CARET  &kp AMPERSAND  &kp ASTERISK  &kp LEFT_PARENTHESIS  &kp RIGHT_PARENTHESIS  &kp UNDERSCORE
+&kp GRAVE         &kp NUMBER_1     &kp NUMBER_2  &kp NUMBER_3  &kp NUMBER_4  &kp LBKT       &kp RBKT   &kp F1         &kp F2        &kp F3                &kp F4                 &kp DEL
+&kp LEFT_CONTROL  &kp NUMBER_5     &kp NUMBER_6  &kp NUMBER_7  &kp NUMBER_8  &none          &kp BSLH   &kp F5         &kp F6        &kp F7                &kp F8                 &kp PAGE_UP
+&kp LSHFT         &kp NUMBER_9     &kp NUMBER_0  &kp MINUS     &kp EQUAL     &none          &trans     &kp F9         &kp F10       &kp F11               &kp F12                &kp PAGE_DOWN
+                                                 &none         &none         &none          &kp ENTER  &kp BACKSPACE
+                                                               &trans        &trans         &trans
+            >;
+        };
+
+Bth {
+            bindings = <
+&none        &none         &none         &none         &none      &none         &none       &none      &none         &none         &none         &none
+&none        &none         &none         &none         &none      &none         &none       &none      &none         &none         &none         &none
+&none        &bt BT_SEL 0  &bt BT_SEL 1  &bt BT_SEL 2  &none      &bt BT_CLR    &bt BT_CLR  &none      &bt BT_SEL 2  &bt BT_SEL 1  &bt BT_SEL 0  &none
+&bootloader  &trans        &mkp RCLK     &mo 4         &none      &none         &mo 5       &mkp LCLK  &mo 4         &mkp RCLK     &none         &bootloader
+                                         &mo 5         &none      &none         &mkp RCLK   &mkp LCLK
+                                                       &none      &none         &none
+            >;
+        };
+
+layer_4 {
+            bindings = <
+&trans  &trans  &trans     &trans     &trans     &trans       &trans     &trans     &trans     &trans     &trans  &trans
+&trans  &trans  &trans     &trans     &trans     &trans       &trans     &trans     &trans     &trans     &trans  &trans
+&trans  &trans  &trans     &mkp MCLK  &trans     &trans       &trans     &trans     &mkp MCLK  &trans     &trans  &trans
+&trans  &trans  &mkp RCLK  &trans     &mkp LCLK  &trans       &trans     &mkp LCLK  &trans     &mkp RCLK  &trans  &trans
+                           &trans     &mkp LCLK  &mkp RCLK    &mkp RCLK  &mkp LCLK
+                                      &trans     &trans       &trans
+            >;
+
+            //trackball-bindings = <&tsl>;//capa de rodillo
+        };
+
+layer_5 {
+            bindings = <
+&trans  &trans  &trans     &trans     &trans     &trans       &trans     &trans     &trans     &trans     &trans  &trans
+&trans  &trans  &trans     &trans     &trans     &trans       &trans     &trans     &trans     &trans     &trans  &trans
+&trans  &trans  &trans     &mkp MCLK  &trans     &trans       &trans     &trans     &mkp MCLK  &trans     &trans  &trans
+&trans  &trans  &mkp RCLK  &trans     &mkp LCLK  &trans       &trans     &mkp LCLK  &trans     &mkp RCLK  &trans  &trans
+                           &trans     &mkp LCLK  &mkp RCLK    &mkp RCLK  &mkp LCLK
+                                      &trans     &trans       &trans
+            >;
+
+            //trackball-bindings = <&tmv_fine>;//Capa de puntero de precisión
+        };
+    };
+};
